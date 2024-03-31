@@ -56,4 +56,18 @@ const deleteUser = async (username) => {
     throw error;
   }
 };
-module.exports = { findUser, saveUser, getSetMutual, deleteUser };
+
+const updateUser = async (username, updateData) => {
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { username },
+      { $set: updateData },
+      { new: true }
+    );
+
+    return updatedUser;
+  } catch (error) {
+    throw error;
+  }
+};
+module.exports = { findUser, saveUser, getSetMutual, deleteUser, updateUser };

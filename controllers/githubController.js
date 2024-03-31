@@ -86,8 +86,17 @@ const deleteUser = async (req, res) => {
   }
 };
 
-const updateUser = (req, res) => {
+const updateUser = async (req, res) => {
   try {
+    const { username } = req.params;
+    const updateData = req.body;
+
+    const doesUserExists = await githubService.findUser(username);
+    if (!doesUserExists)
+      return res.status(403).json({ message: "User does not exists!" });
+
+    const user = await githubService.updateUser(username, updateData);
+    return res.status(201).json(user);
   } catch (error) {
     return res.json({ message: error.message });
   }
