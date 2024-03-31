@@ -9,24 +9,25 @@ const saveUser = async (req, res) => {
     if (isUser) return res.status(200).json(isUser);
 
     // if not available
-    const res = await axios.get(`https://api.github.com/users/${username}`);
+    const res = await fetch(`https://api.github.com/users/${username}`);
+    const data = res.json();
 
     const userData = {
-      username: response.data.login,
-      id: response.data.id,
-      avatar_url: response.data.avatar_url,
-      type: response.data.type,
-      name: response.data.name,
-      company: response.data.company,
-      blog: response.data.blog,
-      location: response.data.location,
-      email: response.data.email,
-      bio: response.data.bio,
-      public_repos: response.data.public_repos,
-      followers: response.data.followers,
-      following: response.data.following,
-      created_at: response.data.created_at,
-      updated_at: response.data.updated_at,
+      username: data.login,
+      id: data.id,
+      avatar_url: data.avatar_url,
+      type: data.type,
+      name: data.name,
+      company: data.company,
+      blog: data.blog,
+      location: data.location,
+      email: data.email,
+      bio: data.bio,
+      public_repos: data.public_repos,
+      followers: data.followers,
+      following: data.following,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
     };
 
     const newUser = await githubService.saveUser(userData);
@@ -37,8 +38,27 @@ const saveUser = async (req, res) => {
   }
 };
 
-const findMutuals = (req, res) => {
+const findMutuals = async (req, res) => {
   try {
+    const { username } = req.params;
+
+    const followerRes = await fetch(
+      `https://api.github.com/users/${username}/followers`
+    );
+    const followers = await followerRes.json();
+
+    const followingRes = await fetch(
+      `https://api.github.com/users/${username}/following`
+    );
+    const following = await followingRes.json();
+
+    const mutuals = await githubService.getSetMutual(
+      username,
+      followers,
+      following
+    );
+
+    return res.status(200).json(mutuals);
   } catch (error) {
     return res.json({ message: error.message });
   }
