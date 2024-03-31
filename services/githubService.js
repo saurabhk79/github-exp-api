@@ -47,4 +47,13 @@ const getSetMutual = async (username, followers, following) => {
   }
 };
 
-module.exports = { findUser, saveUser, getSetMutual };
+const deleteUser = async (username) => {
+  try {
+    const user = await User.deleteOne({ username });
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+module.exports = { findUser, saveUser, getSetMutual, deleteUser };
