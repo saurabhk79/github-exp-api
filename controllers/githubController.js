@@ -64,8 +64,19 @@ const findMutuals = async (req, res) => {
   }
 };
 
-const searchUsers = (req, res) => {
+const searchUsers = async (req, res) => {
   try {
+    const { username, location, type, company } = req.query;
+    const filters = {};
+
+    if (username) filters.username = username;
+    if (location) filters.location = location;
+    if (type) filters.type = type;
+    if (company) filters.company = company;
+
+    const users = await githubService.searchUsers(filters);
+
+    return res.status(200).json(users);
   } catch (error) {
     return res.json({ message: error.message });
   }
@@ -102,8 +113,22 @@ const updateUser = async (req, res) => {
   }
 };
 
-const listUser = (req, res) => {
+const listUser = async (req, res) => {
   try {
+    const { sortBy } = req.query;
+
+    const sortOptions = {};
+
+    if (sortBy) {
+      if (sortBy === "public_repos") {
+        sortOptions.public_repos = 1;
+      } else if (sortBy === "followers") {
+        sortOptions.followers = -1;
+      }
+    }
+    const users = await githubService.listAllUser(sortOptions);
+
+    return res.status(200).json(users);
   } catch (error) {
     return res.json({ message: error.message });
   }

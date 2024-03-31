@@ -47,6 +47,16 @@ const getSetMutual = async (username, followers, following) => {
   }
 };
 
+const searchUsers = async (filters) => {
+  try {
+    const users = await User.find(filters);
+
+    return users;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const deleteUser = async (username) => {
   try {
     const user = await User.deleteOne({ username });
@@ -70,4 +80,22 @@ const updateUser = async (username, updateData) => {
     throw error;
   }
 };
-module.exports = { findUser, saveUser, getSetMutual, deleteUser, updateUser };
+
+const listAllUser = async (sortby) => {
+  try {
+    const users = await User.find().sort(sortby);
+
+    return users;
+  } catch (error) {
+    throw error;
+  }
+};
+module.exports = {
+  findUser,
+  saveUser,
+  getSetMutual,
+  deleteUser,
+  updateUser,
+  listAllUser,
+  searchUsers,
+};
