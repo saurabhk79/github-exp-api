@@ -9,9 +9,10 @@ const saveUser = async (req, res) => {
     if (isUser) return res.status(200).json(isUser);
 
     // if not available
-    const res = await fetch(`https://api.github.com/users/${username}`);
-    const data = res.json();
+    const response = await fetch(`https://api.github.com/users/${username}`);
+    const data = await response.json();
 
+    console.log(data);
     const userData = {
       username: data.login,
       id: data.id,
